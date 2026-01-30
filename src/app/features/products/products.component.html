@@ -1,0 +1,86 @@
+<div class="products-container">
+  <header class="products-header">
+    <h1>Gestión de Productos</h1>
+    <button class="btn-primary" (click)="onCreateProduct()">
+      ➕ Nuevo Producto
+    </button>
+  </header>
+
+  <!-- Filtro por categoría -->
+  <div class="filters" *ngIf="(categories$ | async) as categories">
+    <button 
+      class="filter-btn" 
+      [class.active]="selectedCategory === null"
+      (click)="filterByCategory(null)">
+      Todas
+    </button>
+    <button 
+      *ngFor="let category of categories"
+      class="filter-btn"
+      [class.active]="selectedCategory === category"
+      (click)="filterByCategory(category)">
+      {{ category }}
+    </button>
+  </div>
+
+  <!-- Estado de carga -->
+  <div *ngIf="loading$ | async" class="loading">
+    <div class="spinner"></div>
+    <p>Cargando productos...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error$ | async as error" class="error">
+    <h3>❌ Error al cargar productos</h3>
+    <p>{{ error.message || 'Error desconocido' }}</p>
+    <button class="btn-secondary" (click)="ngOnInit()">Reintentar</button>
+  </div>
+
+  <!-- Lista de productos -->
+  <div *ngIf="(products$ | async) as products" class="products-grid">
+    <div *ngIf="products.length === 0 && !(loading$ | async)" class="empty-state">
+      <p>📦 No hay productos disponibles</p>
+      <button class="btn-primary" (click)="onCreateProduct()">
+        Crear primer producto
+      </button>
+    </div>
+
+    <div 
+      *ngFor="let product of products; trackBy: trackByProductId" 
+      class="product-card">
+      <div class="product-header">
+        <h3>{{ product.name }}</h3>
+        <span class="category-badge">{{ product.category }}</span>
+      </div>
+      
+      <div class="product-body">
+        <p class="description">{{ product.description }}</p>
+        
+        <div class="product-info">
+          <div class="info-item">
+            <span class="label">Precio:</span>
+            <span class="value price">${{ product.price | number:'1.2-2' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Stock:</span>
+            <span class="value stock" [class.low-stock]="product.stock < 10">
+              {{ product.stock }} unidades
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-actions">
+        <button class="btn-view" (click)="onViewProduct(product.id)" title="Ver detalles">
+          👁️
+        </button>
+        <button class="btn-edit" (click)="onEditProduct(product.id)" title="Editar">
+          ✏️
+        </button>
+        <button class="btn-delete" (click)="onDeleteProduct(product.id, product.name)" title="Eliminar">
+          🗑️
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

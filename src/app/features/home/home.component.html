@@ -1,0 +1,61 @@
+<div class="home-container">
+  <header class="home-header">
+    <h1>Proyecto Angular Escalable</h1>
+    <p>Con NgRx, TypeScript y arquitectura modular</p>
+  </header>
+
+  <div class="button-container">
+    <button routerLink="/products" class="primary-button">
+      Go to Products Page
+    </button>
+  </div>
+
+  <section class="home-content">
+    <!-- Estado de carga -->
+    <div *ngIf="loading$ | async" class="loading">
+      Cargando...
+    </div>
+
+    <!-- Error -->
+    <div *ngIf="error$ | async as error" class="error">
+      Error: {{ error }}
+    </div>
+
+    <!-- Datos -->
+    <div *ngIf="data$ | async as data" class="data">
+      <h2>Datos del Store:</h2>
+      <pre>{{ data | json }}</pre>
+      <button (click)="reload()">Recargar</button>
+    </div>
+  </section>
+
+  <section class="features">
+    <h2>Características del Proyecto</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <h3>🎯 Escalable</h3>
+        <p>Arquitectura modular para agregar nuevos features fácilmente</p>
+      </div>
+      <div class="feature-card">
+        <h3>🔧 Mantenible</h3>
+        <p>Código organizado siguiendo mejores prácticas</p>
+      </div>
+      <div class="feature-card">
+        <h3>✅ Testeable</h3>
+        <p>Separación clara de responsabilidades</p>
+      </div>
+      <div class="feature-card">
+        <h3>📦 NgRx</h3>
+        <p>Estado centralizado y predecible</p>
+      </div>
+      <div class="feature-card">
+        <h3>💎 TypeScript</h3>
+        <p>Seguridad de tipos en toda la aplicación</p>
+      </div>
+      <div class="feature-card">
+        <h3>🧩 Modular</h3>
+        <p>Cada feature es independiente</p>
+      </div>
+    </div>
+  </section>
+</div>

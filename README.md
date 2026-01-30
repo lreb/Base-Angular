@@ -1,66 +1,132 @@
-# FacwareBaseFrontend
+# Base Angular App - Proyecto Escalable 🚀
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.7.
+Proyecto Angular con arquitectura modular, escalable y mantenible, utilizando **NgRx** para el manejo de estado centralizado.
 
-## Development server
+## ✨ Características Principales
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+- ✅ **Escalable**: Arquitectura modular que facilita agregar nuevos features
+- 🔧 **Mantenible**: Código organizado siguiendo mejores prácticas
+- 🧪 **Testeable**: Separación clara de responsabilidades
+- 📦 **NgRx**: Manejo de estado centralizado con Store, Effects y Selectors
+- 💎 **TypeScript**: Seguridad de tipos en toda la aplicación
+- 🧩 **Modular**: Cada feature es independiente y auto-contenido
+- 🎨 **CSS**: Estilos con CSS puro
 
-## Code scaffolding
+## 🚀 Inicio Rápido
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+### Ejecutar en modo desarrollo
 
-Generate module (simulate) `ng g m <route/module_name> --routing -m  <module_parent> -d`  
-Generate component under a module configuration and skip test script `ng g c <component> --routing -m <parent_moduke>  -d  --skip-tests`
+```bash
+npm start
+```
 
-## Build
+La aplicación estará disponible en `http://localhost:4200/`
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+### Build de producción
 
-Run `ng build -c development` to build development environment
+```bash
+npm run build
+```
 
-Run `ng build -c staging` to build staging environment
+Los archivos se generarán en `dist/`
+
+## 📁 Estructura del Proyecto
+
+```
+src/app/
+├── core/              # Servicios singleton y funcionalidades core
+│   ├── guards/        # Guards de navegación
+│   ├── interceptors/  # HTTP interceptors
+│   ├── models/        # Interfaces y modelos
+│   └── services/      # Servicios core
+├── features/          # Features modulares
+│   └── home/          # Ejemplo de feature con NgRx
+│       ├── components/
+│       └── store/     # Actions, Reducers, Selectors, Effects
+├── shared/            # Componentes, directivas y pipes compartidos
+├── store/             # Configuración global de NgRx
+└── environments/      # Configuraciones de entorno
+```
+
+## 📚 Documentación Completa
+
+Para información detallada sobre la arquitectura, convenciones y cómo crear nuevos features, consulta:
+
+👉 **[ARQUITECTURA.md](./ARQUITECTURA.md)** - Guía completa de arquitectura y mejores prácticas
+
+## 🛠️ Tecnologías
+
+- **Angular** 19+ - Framework principal
+- **@ngrx/store** - Manejo de estado
+- **@ngrx/effects** - Side effects
+- **@ngrx/router-store** - Integración routing con store
+- **@ngrx/store-devtools** - DevTools para debugging
+- **TypeScript** - Lenguaje principal
+- **RxJS** - Programación reactiva
+
+## 🎯 Crear un Nuevo Feature
+
+Para crear un nuevo feature modular con NgRx, sigue la guía en [ARQUITECTURA.md](./ARQUITECTURA.md#-crear-un-nuevo-feature).
+
+Pasos básicos:
+1. Crear estructura de carpetas
+2. Implementar Actions, Reducer, Selectors y Effects
+3. Registrar en el store global
+4. Crear componente
+5. Agregar rutas
+
+## 🧪 Testing
+
+```bash
+# Ejecutar tests unitarios
+npm test
+
+# Tests con coverage
+npm run test:coverage
+```
+
+## 🔍 Linting
+
+```bash
+npm run lint
+```
+
+## 📖 Recursos
+
+- [Documentación de Angular](https://angular.dev)
+- [Documentación de NgRx](https://ngrx.io)
+- [Arquitectura del Proyecto](./ARQUITECTURA.md)
+
+---
+
+**Proyecto creado con Angular CLI v21.0.2**
+
+To build the project run:
+
+```bash
+ng build
+```
+
+This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
 
 ## Running unit tests
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+
+```bash
+ng test
+```
 
 ## Running end-to-end tests
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+For end-to-end (e2e) testing, run:
 
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
-
-## Authentication
-
-we are using JWT and OKTA modes, just fill the correct configuration in environment files and select the mode
-
-we are using a service to support this behavior `AuthenticationService`
-
-### Okta
-
-```typescript
-okta: {
-  issuer: `${ProtocolTypes.Https}{replace-with-okta-domain}.okta.com/oauth2/default`,
-  redirectUri: window.location.origin + '/implicit/callback',
-  clientId: '{replace-with-client-id}',
-  scope: `openid profile email nickname middle_name`.split(/\s+/),
-  pkce: true
-}
+```bash
+ng e2e
 ```
 
-`authenticationMethod: AuthenticationMode.OKTA,`
+Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
 
- `, canActivate: [ OktaAuthGuard ]`  uncomment when use OKTA Guard in routing model
+## Additional Resources
 
-### JWT - self generated
-
-`authenticationMethod: AuthenticationMode.JWT,`
-
-## AdmiLTE
-
-[Source Code](https://github.com/ColorlibHQ/AdminLTE/releases)
-[Integrate](https://www.prishusoft.com/blog/Integrate-AdminLTE-theme-to-Angular-Project.html)
-[AdminLTE-Angular](https://twanoo67.github.io/ngx-admin-lte/index.html)
+For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
