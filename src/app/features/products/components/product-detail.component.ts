@@ -8,7 +8,7 @@ import * as ProductsSelectors from '../store/products.selectors';
 import { Product } from '../models';
 
 /**
- * Componente para ver detalles de un producto (solo lectura)
+ * Product Detail Component
  */
 @Component({
   selector: 'app-product-detail',
@@ -18,6 +18,7 @@ import { Product } from '../models';
   styleUrl: './product-detail.component.css'
 })
 export class ProductDetailComponent implements OnInit {
+  // Injected services
   private store = inject(Store);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -43,10 +44,18 @@ export class ProductDetailComponent implements OnInit {
     this.router.navigate(['/products/edit', id]);
   }
 
+  /**
+   * Go back to the products list
+   */
   onBack(): void {
     this.router.navigate(['/products']);
   }
 
+  /**
+   * Delete the product after confirmation
+   * @param id The ID of the product to delete
+   * @param name The name of the product to delete
+   */
   onDelete(id: string, name: string): void {
     if (confirm(`¿Estás seguro de eliminar el producto "${name}"?`)) {
       this.store.dispatch(ProductsActions.deleteProduct({ id }));
