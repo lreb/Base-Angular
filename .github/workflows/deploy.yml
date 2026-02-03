@@ -1,0 +1,142 @@
+name: CD - Prepare Release
+
+# Este workflow prepara releases que pueden desplegarse en cualquier servicio cloud
+# (Digital Ocean, AWS, Azure, Vercel, Netlify, etc.)
+
+on:
+  workflow_dispatch:  # Ejecución manual desde GitHub UI
+    inputs:
+      version:
+        description: 'Release version (e.g., v1.0.0)'
+        required: false
+        default: 'latest'
+  push:
+    tags:
+      - 'v*'  # Se activa cuando creas un tag como v1.0.0
+
+jobs:
+  prepare-release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build for production
+      run: npm run build
+
+    - name: Get version
+      id: version
+      run: |
+        if [ "${{ github.event.inputs.version }}" != "" ]; then
+          echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+        elif [ "${{ github.ref_type }}" == "tag" ]; then
+          echo "version=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+        else
+          echo "version=latest" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Create deployment package
+      run: |
+        cd dist
+        tar -czf ../angular-app-${{ steps.version.outputs.version }}.tar.gz .
+        zip -r ../angular-app-${{ steps.version.outputs.version }}.zip .
+        cd ..
+        echo "📦 Package created:"
+        ls -lh angular-app-${{ steps.version.outputs.version }}.*
+
+    - name: Generate checksums
+      run: |
+        sha256sum angular-app-${{ steps.version.outputs.version }}.tar.gz > checksums.txt
+        sha256sum angular-app-${{ steps.version.outputs.version }}.zip >> checksums.txt
+        cat checksums.txt
+
+    - name: Upload release artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: release-${{ steps.version.outputs.version }}
+        path: |
+          angular-app-${{ steps.version.outputs.version }}.tar.gz
+          angular-app-${{ steps.version.outputs.version }}.zip
+          checksums.txt
+          nginx.conf
+        retention-days: 90
+
+    - name: Create GitHub Release
+      if: github.ref_type == 'tag'
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          angular-app-${{ steps.version.outputs.version }}.tar.gz
+          angular-app-${{ steps.version.outputs.version }}.zip
+          checksums.txt
+          nginx.conf
+        body: |
+          ## 🚀 Release ${{ steps.version.outputs.version }}
+
+          ### 📦 Assets
+          - `angular-app-${{ steps.version.outputs.version }}.tar.gz` - Producción (Linux/Mac)
+          - `angular-app-${{ steps.version.outputs.version }}.zip` - Producción (Windows/Universal)
+          - `nginx.conf` - Configuración de Nginx
+          - `checksums.txt` - SHA256 checksums
+
+          ### 🌐 Deploy Options
+
+          **Digital Ocean App Platform:**
+          ```bash
+          doctl apps create --spec .do/app.yaml
+          ```
+
+          **Digital Ocean Droplet:**
+          ```bash
+          scp angular-app-${{ steps.version.outputs.version }}.tar.gz user@droplet:/tmp/
+          ssh user@droplet
+          cd /var/www/html
+          tar -xzf /tmp/angular-app-${{ steps.version.outputs.version }}.tar.gz
+          ```
+
+          **AWS S3 + CloudFront:**
+          ```bash
+          unzip angular-app-${{ steps.version.outputs.version }}.zip
+          aws s3 sync . s3://your-bucket-name/ --delete
+          aws cloudfront create-invalidation --distribution-id YOUR_DIST_ID --paths "/*"
+          ```
+
+          **Azure Static Web Apps:**
+          ```bash
+          az staticwebapp deploy --name your-app-name --source angular-app-${{ steps.version.outputs.version }}.zip
+          ```
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Summary
+      run: |
+        echo "### 🎉 Release Preparado" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Versión:** ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 📦 Archivos Generados" >> $GITHUB_STEP_SUMMARY
+        echo \`\`\`" >> $GITHUB_STEP_SUMMARY
+        ls -lh angular-app-* checksums.txt nginx.conf
+        echo \`\`\`" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 🚀 Próximos Pasos" >> $GITHUB_STEP_SUMMARY
+        echo "1. Descarga los artifacts desde la pestaña Actions" >> $GITHUB_STEP_SUMMARY
+        echo "2. Elige tu plataforma de deployment:" >> $GITHUB_STEP_SUMMARY
+        echo "   - Digital Ocean (Droplet o App Platform)" >> $GITHUB_STEP_SUMMARY
+        echo "   - AWS S3 + CloudFront" >> $GITHUB_STEP_SUMMARY
+        echo "   - Azure Static Web Apps" >> $GITHUB_STEP_SUMMARY
+        echo "   - Vercel" >> $GITHUB_STEP_SUMMARY
+        echo "   - Netlify" >> $GITHUB_STEP_SUMMARY
+        echo "3. Sigue las instrucciones de deployment en el README" >> $GITHUB_STEP_SUMMARY
