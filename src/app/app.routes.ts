@@ -27,10 +27,4 @@ export const routes: Routes = [
     path: 'products/:id',
     loadComponent: () => import('./features/products/components/product-detail.component').then(m => m.ProductDetailComponent)
   }
-  // Agregar aquí más rutas de features
-  // Ejemplo de lazy loading:
-  // {
-  //   path: 'users',
-  //   loadComponent: () => import('./features/users/users.component').then(m => m.UsersComponent)
-  // }
 ];

@@ -1,0 +1,88 @@
+name: CI - Build and Test
+
+on:
+  push:
+    branches: [ main, develop, release/* ]
+  pull_request:
+    branches: [ main, develop, release/* ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: TypeScript syntax check
+      run: npm run typecheck
+
+    - name: Run tests
+      run: npm test -- --watch=false
+
+    - name: Build application for production
+      run: npm run build
+
+    - name: Display build output structure
+      run: |
+        echo " Build completed successfully!"
+        echo "Build output structure:"
+        ls -lah dist/
+        if [ -d "dist/base-angular-app/browser" ]; then
+          echo "Browser bundle size:"
+          du -sh dist/base-angular-app/browser
+        fi
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: angular-app-dist-${{ github.sha }}
+        path: dist/
+        retention-days: 30
+        compression-level: 9
+
+    - name: Create deployment package
+      run: |
+        cd dist
+        zip -r ../angular-app-${{ github.sha }}.zip .
+        cd ..
+        echo " Package size: $(du -h angular-app-${{ github.sha }}.zip | cut -f1)"
+
+    - name: Upload deployment package
+      uses: actions/upload-artifact@v4
+      with:
+        name: deployment-package-${{ github.sha }}
+        path: angular-app-${{ github.sha }}.zip
+        retention-days: 30
+
+    - name: Summary
+      run: |
+        echo "### Build Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Node Version:** ${{ matrix.node-version }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo " **Artifacts generated:**" >> $GITHUB_STEP_SUMMARY
+        echo "- angular-app-dist-${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+        echo "- deployment-package-${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo " **Ready to deploy to:**" >> $GITHUB_STEP_SUMMARY
+        echo "- Digital Ocean" >> $GITHUB_STEP_SUMMARY
+        echo "- AWS S3 + CloudFront" >> $GITHUB_STEP_SUMMARY
+        echo "- Azure Static Web Apps" >> $GITHUB_STEP_SUMMARY
+        echo "- Vercel" >> $GITHUB_STEP_SUMMARY
+        echo "- Netlify" >> $GITHUB_STEP_SUMMARY

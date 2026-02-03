@@ -1,10 +1,16 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { Title } from '@angular/platform-browser';
 import { App } from './app';
 
 describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App],
+      providers: [
+        provideRouter([]),
+        Title
+      ]
     }).compileComponents();
   });
 
@@ -14,10 +20,25 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render title', async () => {
+  it('should have a title property', () => {
     const fixture = TestBed.createComponent(App);
-    await fixture.whenStable();
+    const app = fixture.componentInstance;
+    expect(app.title).toBeDefined();
+    expect(typeof app.title).toBe('string');
+  });
+
+  it('should set document title on init', () => {
+    const fixture = TestBed.createComponent(App);
+    const titleService = TestBed.inject(Title);
+    const app = fixture.componentInstance;
+
+    expect(titleService.getTitle()).toBe(app.title);
+  });
+
+  it('should render router-outlet', () => {
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, base-angular-app');
+    expect(compiled.querySelector('router-outlet')).toBeTruthy();
   });
 });

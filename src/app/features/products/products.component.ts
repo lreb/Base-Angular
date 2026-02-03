@@ -6,15 +6,17 @@ import { Observable } from 'rxjs';
 import * as ProductsActions from './store/products.actions';
 import * as ProductsSelectors from './store/products.selectors';
 import { Product } from './models';
+import { LoadingComponent } from '../../shared/components/loading.component';
+import { ErrorComponent } from '../../shared/components/error.component';
 
 /**
- * Componente principal del feature Products
- * Lista todos los productos
+ * Main component of the Products feature
+ * Lists all products and allows navigation to create, edit, and view details
  */
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, LoadingComponent, ErrorComponent],
   templateUrl: './products.component.html',
   styleUrl: './products.component.css'
 })
@@ -49,7 +51,7 @@ export class ProductsComponent implements OnInit {
   }
 
   onDeleteProduct(id: string, name: string): void {
-    if (confirm(`¿Estás seguro de eliminar el producto "${name}"?`)) {
+    if (confirm(`Are you sure you want to delete the product "${name}"?`)) {
       this.store.dispatch(ProductsActions.deleteProduct({ id }));
     }
   }
@@ -60,7 +62,7 @@ export class ProductsComponent implements OnInit {
 
   filterByCategory(category: string | null): void {
     this.selectedCategory = category;
-    
+
     if (category) {
       this.products$ = this.store.select(ProductsSelectors.selectProductsByCategory(category));
     } else {

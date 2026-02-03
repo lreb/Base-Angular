@@ -17,7 +17,7 @@ export const loadProductsFailure = createAction(
 );
 
 /**
- * Acciones para cargar un producto específico
+ * Actions to load a single product
  */
 export const loadProduct = createAction(
   '[Product Detail Page] Load Product',
@@ -35,7 +35,7 @@ export const loadProductFailure = createAction(
 );
 
 /**
- * Acciones para crear producto
+ * Actions to create a product
  */
 export const createProduct = createAction(
   '[Product Form] Create Product',
@@ -53,7 +53,7 @@ export const createProductFailure = createAction(
 );
 
 /**
- * Acciones para actualizar producto
+ * Actions to update a product
  */
 export const updateProduct = createAction(
   '[Product Form] Update Product',
@@ -71,7 +71,7 @@ export const updateProductFailure = createAction(
 );
 
 /**
- * Acciones para eliminar producto
+ * Actions to delete a product
  */
 export const deleteProduct = createAction(
   '[Product List] Delete Product',
@@ -89,7 +89,7 @@ export const deleteProductFailure = createAction(
 );
 
 /**
- * Acción para limpiar el producto seleccionado
+ * Action to clear the selected product
  */
 export const clearSelectedProduct = createAction(
   '[Product Detail] Clear Selected Product'

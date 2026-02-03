@@ -42,21 +42,32 @@ export class ProductsService {
    * Obtener un producto por ID
    */
   getProductById(id: string): Observable<Product> {
-    return this.http.get<Product>(`${this.apiUrl}/${id}`);
+    return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
+      map(response => {
+        if (!response) {
+          throw new Error(`Product with id ${id} not found`);
+        }
+        return response.data ? response.data : response;
+      })
+    );
   }
 
   /**
    * Crear un nuevo producto
    */
   createProduct(product: CreateProductCommand): Observable<Product> {
-    return this.http.post<Product>(this.apiUrl, product);
+    return this.http.post<any>(this.apiUrl, product).pipe(
+      map(response => response.data ? response.data : response)
+    );
   }
 
   /**
    * Actualizar un producto existente
    */
   updateProduct(id: string, product: UpdateProductCommand): Observable<Product> {
-    return this.http.put<Product>(`${this.apiUrl}/${id}`, product);
+    return this.http.put<any>(`${this.apiUrl}/${id}`, product).pipe(
+      map(response => response.data ? response.data : response)
+    );
   }
 
   /**
