@@ -27,12 +27,8 @@ jobs:
     - name: Install dependencies
       run: npm ci
 
-    - name: Lint code (if configured)
-      continue-on-error: true
-      run: npm run lint || echo "No lint script found"
-
     - name: Run tests
-      run: npm test -- --run
+      run: npm test -- --watch=false
 
     - name: Build application for production
       run: npm run build
