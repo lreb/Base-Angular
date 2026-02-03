@@ -1,112 +1,126 @@
 <div class="form-container">
   <header class="form-header">
-    <h1>{{ isEditMode ? 'Editar Producto' : 'Nuevo Producto' }}</h1>
-    <button class="btn-back" (click)="onCancel()">← Volver</button>
+    <h1>{{ isEditMode ? 'Edit Product' : 'New Product' }}</h1>
+    <button class="btn-back" (click)="onCancel()">← Back</button>
   </header>
 
-  <!-- Error general -->
-  <div *ngIf="error$ | async as error" class="error-message">
-    <p>❌ {{ error.message || 'Error al procesar la solicitud' }}</p>
-  </div>
+  <!-- General error -->
+  @if (error$ | async; as error) {
+    <app-error
+      title="Error"
+      [message]="error.message || 'Error processing request'">
+    </app-error>
+  }
 
   <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="product-form">
-    
-    <!-- Nombre -->
+
+    <!-- Name -->
     <div class="form-group">
-      <label for="name">Nombre del Producto *</label>
-      <input 
-        type="text" 
-        id="name" 
+      <label for="name">Product Name *</label>
+      <input
+        type="text"
+        id="name"
         formControlName="name"
         [class.invalid]="isFieldInvalid('name')"
-        placeholder="Ej: Laptop HP">
-      <span class="error-text" *ngIf="isFieldInvalid('name')">
-        {{ getFieldError('name') }}
-      </span>
+        placeholder="E.g.: HP Laptop">
+      @if (isFieldInvalid('name')) {
+        <span class="error-text">
+          {{ getFieldError('name') }}
+        </span>
+      }
     </div>
 
-    <!-- Descripción -->
+    <!-- Description -->
     <div class="form-group">
-      <label for="description">Descripción *</label>
-      <textarea 
-        id="description" 
+      <label for="description">Description *</label>
+      <textarea
+        id="description"
         formControlName="description"
         [class.invalid]="isFieldInvalid('description')"
         rows="4"
-        placeholder="Describe el producto..."></textarea>
-      <span class="error-text" *ngIf="isFieldInvalid('description')">
-        {{ getFieldError('description') }}
-      </span>
+        placeholder="Describe the product..."></textarea>
+      @if (isFieldInvalid('description')) {
+        <span class="error-text">
+          {{ getFieldError('description') }}
+        </span>
+      }
     </div>
 
-    <!-- Precio y Stock en fila -->
+    <!-- Price & Stock -->
     <div class="form-row">
       <div class="form-group">
-        <label for="price">Precio *</label>
-        <input 
-          type="number" 
-          id="price" 
+        <label for="price">Price *</label>
+        <input
+          type="number"
+          id="price"
           formControlName="price"
           [class.invalid]="isFieldInvalid('price')"
           step="0.01"
           min="0"
           placeholder="0.00">
-        <span class="error-text" *ngIf="isFieldInvalid('price')">
-          {{ getFieldError('price') }}
-        </span>
+        @if (isFieldInvalid('price')) {
+          <span class="error-text">
+            {{ getFieldError('price') }}
+          </span>
+        }
       </div>
 
       <div class="form-group">
         <label for="stock">Stock *</label>
-        <input 
-          type="number" 
-          id="stock" 
+        <input
+          type="number"
+          id="stock"
           formControlName="stock"
           [class.invalid]="isFieldInvalid('stock')"
           min="0"
           placeholder="0">
-        <span class="error-text" *ngIf="isFieldInvalid('stock')">
-          {{ getFieldError('stock') }}
-        </span>
+        @if (isFieldInvalid('stock')) {
+          <span class="error-text">
+            {{ getFieldError('stock') }}
+          </span>
+        }
       </div>
     </div>
 
-    <!-- Categoría -->
+    <!-- Category -->
     <div class="form-group">
-      <label for="category">Categoría *</label>
-      <input 
-        type="text" 
-        id="category" 
+      <label for="category">Category *</label>
+      <input
+        type="text"
+        id="category"
         formControlName="category"
         [class.invalid]="isFieldInvalid('category')"
-        placeholder="Ej: Electrónica">
-      <span class="error-text" *ngIf="isFieldInvalid('category')">
-        {{ getFieldError('category') }}
-      </span>
+        placeholder="E.g.: Electronics">
+      @if (isFieldInvalid('category')) {
+        <span class="error-text">
+          {{ getFieldError('category') }}
+        </span>
+      }
     </div>
 
-    <!-- Botones -->
+    <!-- Buttons -->
     <div class="form-actions">
-      <button 
-        type="button" 
-        class="btn-cancel" 
+      <button
+        type="button"
+        class="btn-cancel"
         (click)="onCancel()"
         [disabled]="loading$ | async">
-        Cancelar
+        Cancel
       </button>
-      <button 
-        type="submit" 
+      <button
+        type="submit"
         class="btn-submit"
         [disabled]="productForm.invalid || (loading$ | async)">
-        <span *ngIf="loading$ | async" class="spinner"></span>
-        {{ (loading$ | async) ? 'Guardando...' : (isEditMode ? 'Actualizar' : 'Crear') }}
+        @if (loading$ | async) {
+          <span class="spinner"></span>
+        }
+        {{ isEditMode ? 'Save Changes' : 'Create Product' }}
       </button>
+    </div>
+
+    <div class="form-info">
+      <p>* Required fields</p>
     </div>
 
   </form>
-
-  <!-- Información del formulario -->
-  <div class="form-info">
-    <p>* Campos obligatorios</p>
-  </div>
 </div>

@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import * as ProductsActions from '../store/products.actions';
 import * as ProductsSelectors from '../store/products.selectors';
 import { Product } from '../models';
+import { ErrorComponent } from '../../../shared/components/error.component';
 
 /**
  * Componente para crear o editar un producto
@@ -14,7 +15,7 @@ import { Product } from '../models';
 @Component({
   selector: 'app-product-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, ErrorComponent],
   templateUrl: './product-form.component.html',
   styleUrl: './product-form.component.css'
 })
@@ -37,7 +38,7 @@ export class ProductFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
-    
+
     // Verificar si estamos en modo edición
     this.route.paramMap.subscribe(params => {
       this.productId = params.get('id');
@@ -61,7 +62,7 @@ export class ProductFormComponent implements OnInit {
 
   private loadProduct(id: string): void {
     this.store.dispatch(ProductsActions.loadProduct({ id }));
-    
+
     this.store.select(ProductsSelectors.selectSelectedProduct).subscribe(product => {
       if (product) {
         this.productForm.patchValue({

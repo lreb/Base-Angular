@@ -16,7 +16,7 @@ export class ProductsEffects {
   private router = inject(Router);
 
   /**
-   * Effect para cargar todos los productos
+   * Effect to load all products
    */
   loadProducts$ = createEffect(() =>
     this.actions$.pipe(
@@ -31,13 +31,15 @@ export class ProductsEffects {
   );
 
   /**
-   * Effect para cargar un producto específico
+   * Effect to load a single product
    */
   loadProduct$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ProductsActions.loadProduct),
       switchMap(({ id }) =>
         this.productsService.getProductById(id).pipe(
+          tap(product => console.log('Fetched product:', product)),
+          tap(() => console.log('Loaded product with id:', id)),
           map(product => ProductsActions.loadProductSuccess({ product })),
           catchError(error => of(ProductsActions.loadProductFailure({ error })))
         )
@@ -46,7 +48,7 @@ export class ProductsEffects {
   );
 
   /**
-   * Effect para crear un producto
+   * Effect to create a product
    */
   createProduct$ = createEffect(() =>
     this.actions$.pipe(
@@ -61,7 +63,7 @@ export class ProductsEffects {
   );
 
   /**
-   * Effect para redirigir después de crear
+   * Effect to redirect after creating
    */
   createProductSuccess$ = createEffect(() =>
     this.actions$.pipe(
@@ -72,7 +74,7 @@ export class ProductsEffects {
   );
 
   /**
-   * Effect para actualizar un producto
+   * Effect to update a product
    */
   updateProduct$ = createEffect(() =>
     this.actions$.pipe(
@@ -87,7 +89,7 @@ export class ProductsEffects {
   );
 
   /**
-   * Effect para redirigir después de actualizar
+   * Effect to redirect after updating
    */
   updateProductSuccess$ = createEffect(() =>
     this.actions$.pipe(
@@ -98,7 +100,7 @@ export class ProductsEffects {
   );
 
   /**
-   * Effect para eliminar un producto
+   * Effect to delete a product
    */
   deleteProduct$ = createEffect(() =>
     this.actions$.pipe(

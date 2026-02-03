@@ -6,6 +6,8 @@ import { Observable } from 'rxjs';
 import * as ProductsActions from '../store/products.actions';
 import * as ProductsSelectors from '../store/products.selectors';
 import { Product } from '../models';
+import { LoadingComponent } from '../../../shared/components/loading.component';
+import { ErrorComponent } from '../../../shared/components/error.component';
 
 /**
  * Product Detail Component
@@ -13,7 +15,7 @@ import { Product } from '../models';
 @Component({
   selector: 'app-product-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, LoadingComponent, ErrorComponent],
   templateUrl: './product-detail.component.html',
   styleUrl: './product-detail.component.css'
 })
@@ -35,6 +37,7 @@ export class ProductDetailComponent implements OnInit {
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
+    console.log('ProductDetailComponent initialized with id:', id);
     if (id) {
       this.store.dispatch(ProductsActions.loadProduct({ id }));
     }
@@ -57,7 +60,7 @@ export class ProductDetailComponent implements OnInit {
    * @param name The name of the product to delete
    */
   onDelete(id: string, name: string): void {
-    if (confirm(`¿Estás seguro de eliminar el producto "${name}"?`)) {
+    if (confirm(`Are you sure you want to delete the product "${name}"?`)) {
       this.store.dispatch(ProductsActions.deleteProduct({ id }));
       this.router.navigate(['/products']);
     }

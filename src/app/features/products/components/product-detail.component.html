@@ -1,83 +1,89 @@
 <div class="detail-container">
-  <!-- Estado de carga -->
-  <div *ngIf="loading$ | async" class="loading">
-    <div class="spinner"></div>
-    <p>Cargando producto...</p>
-  </div>
+  <!-- Loading state -->
+  @if (loading$ | async) {
+    <app-loading message="Loading product..."></app-loading>
+  }
 
   <!-- Error -->
-  <div *ngIf="error$ | async as error" class="error">
-    <h3>❌ Error al cargar el producto</h3>
-    <p>{{ error.message || 'Error desconocido' }}</p>
-    <button class="btn-secondary" (click)="onBack()">Volver a la lista</button>
-  </div>
+  @if (error$ | async; as error) {
+    <app-error
+      title="Error loading product"
+      [message]="error.message || 'Unknown error'"
+      actionLabel="Back to list"
+      (action)="onBack()">
+    </app-error>
+  }
 
-  <!-- Detalles del producto -->
-  <div *ngIf="(product$ | async) as product" class="detail-content">
-    <header class="detail-header">
-      <div>
-        <h1>{{ product.name }}</h1>
-        <span class="category-badge">{{ product.category }}</span>
-      </div>
-      <div class="header-actions">
-        <button class="btn-secondary" (click)="onBack()">
-          ← Volver
-        </button>
-        <button class="btn-primary" (click)="onEdit(product.id)">
-          ✏️ Editar
-        </button>
-        <button class="btn-danger" (click)="onDelete(product.id, product.name)">
-          🗑️ Eliminar
-        </button>
-      </div>
-    </header>
-
-    <div class="detail-body">
-      <section class="detail-section">
-        <h2>Información General</h2>
-        <div class="info-grid">
-          <div class="info-item">
-            <label>ID:</label>
-            <span class="value">{{ product.id }}</span>
-          </div>
-          <div class="info-item">
-            <label>Nombre:</label>
-            <span class="value">{{ product.name }}</span>
-          </div>
-          <div class="info-item">
-            <label>Categoría:</label>
-            <span class="value">{{ product.category }}</span>
-          </div>
+  <!-- Product detail -->
+  @if (product$ | async; as product) {
+    <div class="detail-content">
+      <header class="detail-header">
+        <div>
+          <h1>{{ product.name }}</h1>
+          <span class="category-badge">{{ product.category }}</span>
         </div>
-      </section>
-
-      <section class="detail-section">
-        <h2>Descripción</h2>
-        <p class="description">{{ product.description || 'Sin descripción' }}</p>
-      </section>
-
-      <section class="detail-section">
-        <h2>Pricing & Inventario</h2>
-        <div class="info-grid">
-          <div class="info-item">
-            <label>Precio:</label>
-            <span class="value price">${{ product.price | number:'1.2-2' }}</span>
-          </div>
-          <div class="info-item">
-            <label>Stock:</label>
-            <span class="value stock" [class.low-stock]="product.stock < 10">
-              {{ product.stock }} unidades
-            </span>
-          </div>
+        <div class="header-actions">
+          <button class="btn-secondary" (click)="onBack()">
+            ← Back
+          </button>
+          <button class="btn-primary" (click)="onEdit(product.id)">
+            ✏️ Edit
+          </button>
+          <button class="btn-danger" (click)="onDelete(product.id, product.name)">
+            🗑️ Delete
+          </button>
         </div>
-      </section>
+      </header>
+
+      <div class="detail-body">
+        <section class="detail-section">
+          <h2>General Information</h2>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>ID:</label>
+              <span class="value">{{ product.id }}</span>
+            </div>
+            <div class="info-item">
+              <label>Name:</label>
+              <span class="value">{{ product.name }}</span>
+            </div>
+            <div class="info-item">
+              <label>Category:</label>
+              <span class="value">{{ product.category }}</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="detail-section">
+          <h2>Description</h2>
+          <p class="description">{{ product.description || 'No description' }}</p>
+        </section>
+
+        <section class="detail-section">
+          <h2>Pricing & Inventory</h2>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Price:</label>
+              <span class="value price">${{ product.price | number:'1.2-2' }}</span>
+            </div>
+            <div class="info-item">
+              <label>Stock:</label>
+              <span class="value stock" [class.low-stock]="product.stock < 10">
+                {{ product.stock }} units
+              </span>
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
-  </div>
+  }
 
-  <!-- Producto no encontrado -->
-  <div *ngIf="!(loading$ | async) && !(product$ | async) && !(error$ | async)" class="not-found">
-    <h2>❌ Producto no encontrado</h2>
-    <p>El producto que buscas no existe o ha sido eliminado.</p>
-    <button class="btn-primary" (click)="onBack()">Volver a la lista</button>
-  </div>
+  <!-- Product not found -->
+  @if (!(loading$ | async) && !(product$ | async) && !(error$ | async)) {
+    <div class="not-found">
+      <h2>❌ Product not found</h2>
+      <p>The product you are looking for does not exist or has been deleted.</p>
+      <button class="btn-primary" (click)="onBack()">Back to list</button>
+    </div>
+  }
 </div>

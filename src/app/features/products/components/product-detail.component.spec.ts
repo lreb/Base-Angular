@@ -155,7 +155,7 @@ describe('ProductDetailComponent', () => {
     component.onDelete('123', 'Test Product');
 
     expect(confirmSpy).toHaveBeenCalledWith(
-      '¿Estás seguro de eliminar el producto "Test Product"?'
+      'Are you sure you want to delete the product "Test Product"?'
     );
   });
 
