@@ -12,7 +12,26 @@ Proyecto Angular con arquitectura modular, escalable y mantenible, utilizando **
 - 🧩 **Modular**: Cada feature es independiente y auto-contenido
 - 🎨 **CSS**: Estilos con CSS puro
 
-## 🚀 Inicio Rápido
+## � Documentación Interactiva con DeepWiki
+
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/lreb/Base-Angular)
+
+¿Tienes preguntas sobre el código? Explora la **documentación generada automáticamente por DeepWiki**, una herramienta impulsada por IA que mantiene documentación actualizada y conversacional de todo el repositorio.
+
+**[🔗 Accede a la Documentación DeepWiki](https://deepwiki.com/lreb/Base-Angular)**
+
+### ¿Qué encontrarás en DeepWiki?
+
+- **Arquitectura detallada**: Diagrams y explicaciones de los patrones de diseño
+- **Gestión de Estado NgRx**: Guías completas sobre Actions, Reducers, Effects y Selectors
+- **Estructura del Proyecto**: Navegación interactiva por módulos y componentes
+- **Flujos de Desarrollo**: Cómo crear nuevos features paso a paso
+- **Stack Tecnológico**: Detalles de todas las dependencias y configuraciones
+- **Documentación Conversacional**: Pregunta lo que necesites sobre el código
+
+La documentación se actualiza automáticamente con cada cambio en el repositorio (última actualización: 4 de febrero 2026).
+
+## �🚀 Inicio Rápido
 
 ### Ejecutar en modo desarrollo
 
